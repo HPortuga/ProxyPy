@@ -1,16 +1,28 @@
+import socket
 import sys
 
-class SocketServer():
+class ProxyServer():
    def __init__ (self, port):
       self.port = port
+      self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      self.sock.bind((socket.gethostname(), self.port))
+
+   def escutar(self):
+      print("escutando...")
+      self.sock.listen(5)
+
+      while True:
+         (clientsocket, endereco) = self.sock.accept()
+         print("Conexao com " + str(tuple(endereco)) + " foi estabelecida!")
 
 if __name__ == "__main__":
-   argumento = sys.argv[1]
-   ha = ""
-
-   nomeArg = argumento[:3]
+   argumentos = sys.argv[1]
+   nomeArg = argumentos[:3]
    if (nomeArg == '-p='): 
-      porta = argumento
-      ha = porta[2:6]
+      porta = argumentos
+      porta = int(porta[-4:])
 
-   print ("The arguments are: " , ha)
+   proxyServer = ProxyServer(porta)
+   proxyServer.escutar()
+
+   
