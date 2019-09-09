@@ -3,8 +3,9 @@ import _thread
 import sys
 
 class ProxyServer():
-   def __init__ (self, porta):
+   def __init__ (self, porta, blacklist):
       self.porta = porta
+      self.blacklist = blacklist
       self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.sock.bind(('', self.porta))
 
@@ -17,16 +18,27 @@ class ProxyServer():
          print("Conexao com " + str(tuple(endereco)) + " foi estabelecida!")
 
          # Essa e a funcao que deve ser executada dentro da thrad
-         _thread.start_new_thread(self.executarProxy, (clientSocket, endereco))
+         _thread.start_new_thread(self.executarProxy, (clientSocket, endereco, self.blacklist))
 
       self.sock.close()
 
-   def executarProxy(self, clientSocket, endereco):
+   def executarProxy(self, clientSocket, endereco, blacklist):
+
       # Requisicao do Browser
-      request = clientSocket.recv(999999)
+      request = str(clientSocket.recv(999999))
+
+       # Pega primeira linha do pedido
+      first_line = request.split('\n')[0]
+
+      # pega a url
+      url = first_line.split(' ')[1].replace(':443', '')
+
+      print("\nURL: " + url + "\n")
+
 
       # Procurar se url esta na blacklist
-
+      if (url in blacklist):
+         print("URL na blacklist!")
       # Procurar na cache
 
 def atribuirPorta():
@@ -44,8 +56,10 @@ def atribuirPorta():
 
 
 if __name__ == "__main__":
+   arq = open(sys.argv[2], 'r')
+   blacklist = arq.readline()
    porta = atribuirPorta()
-   proxyServer = ProxyServer(porta)
+   proxyServer = ProxyServer(porta, blacklist)
    proxyServer.escutar()
 
    
