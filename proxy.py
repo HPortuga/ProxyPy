@@ -38,17 +38,25 @@ class ProxyServer():
 
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
-      # Se metodo = get
-         # Se esta na blacklist, retorna bloqueado
-         # senao se esta na cache, retorna da cache
-         # senao, busca no servidor e guardar na cache
-      # senao, retorna bloqueado
+      if (connectionMethod == "GET"):
+         # Procurar se url esta na blacklist
+         if (url in blacklist):
+            print("URL na blacklist!")   
+      
+      else:
+         print("SERVER ERROR - NOT IMPLEMENTED: ",connectionMethod)
+         clientSocket.close()
+         return
+
+         # Se metodo = get
+            # Se esta na blacklist, retorna bloqueado
+            # senao se esta na cache, retorna da cache
+            # senao, busca no servidor e guardar na cache
+         # senao, retorna bloqueado
       
 
 
-      # Procurar se url esta na blacklist
-      if (url in blacklist):
-         print("URL na blacklist!")
+      
       # Procurar na cache
 
 def atribuirPorta():
