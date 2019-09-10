@@ -30,10 +30,20 @@ class ProxyServer():
        # Pega primeira linha do pedido
       first_line = request.split('\n')[0]
 
+
       # pega a url
       url = first_line.split(' ')[1].replace(':443', '')
 
       print("\nURL: " + url + "\n")
+
+      connectionMethod = first_line.split(' ')[0].replace("b'", "")
+
+      # Se metodo = get
+         # Se esta na blacklist, retorna bloqueado
+         # senao se esta na cache, retorna da cache
+         # senao, busca no servidor e guardar na cache
+      # senao, retorna bloqueado
+      
 
 
       # Procurar se url esta na blacklist
