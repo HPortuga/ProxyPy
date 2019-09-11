@@ -27,18 +27,26 @@ class ProxyServer():
       # Requisicao do Browser
       request = str(clientSocket.recv(999999))
 
+      if (request == "b''"):
+         print("skipping request=b'")
+         clientSocket.close()
+         return
+
        # Pega primeira linha do pedido
       first_line = request.split('\n')[0]
 
 
       # pega a url
+      ###
+      # request pode ser "b'" -> list index out of range
+      ##
       url = first_line.split(' ')[1].replace(':443', '')
 
       print("\nURL: " + url + "\n")
 
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
-      if (connectionMethod == "GET"):
+      if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
          # Procurar se url esta na blacklist
          if (url in blacklist):
             print("URL na blacklist!")   
@@ -57,7 +65,6 @@ class ProxyServer():
 
 
       
-      # Procurar na cache
 
 def atribuirPorta():
    if (len(sys.argv) >= 2):
