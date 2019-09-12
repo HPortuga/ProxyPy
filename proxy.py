@@ -27,41 +27,67 @@ class ProxyServer():
       # Requisicao do Browser
       request = str(clientSocket.recv(999999))
 
-      if (request == "b''"):
-         print("skipping request=b'")
-         clientSocket.close()
-         return
-
-       # Pega primeira linha do pedido
       first_line = request.split('\n')[0]
-
-
-      # pega a url
-      ###
-      # request pode ser "b'" -> list index out of range
-      ##
-      url = first_line.split(' ')[1].replace(':443', '')
-
-      print("\nURL: " + url + "\n")
-
+      url = first_line.split(' ')[1]
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
       if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
          # Procurar se url esta na blacklist
          if (url in blacklist):
-            print("URL na blacklist!")   
+            print("URL na blacklist!") 
+
+         print("Conectando com ",url,"\n")
+
+         webserver, port = self.getAddress(url)
+         
       
       else:
-         print("SERVER ERROR - NOT IMPLEMENTED: ",connectionMethod)
+         print("SERVER ERROR - NOT IMPLEMENTED: ",connectionMethod,"\n")
          clientSocket.close()
-         return
+         sys.exit(1)
 
          # Se metodo = get
             # Se esta na blacklist, retorna bloqueado
             # senao se esta na cache, retorna da cache
             # senao, busca no servidor e guardar na cache
          # senao, retorna bloqueado
+   
+   def getWebserver(self, url):
+      # Remover http:// se existir
+      httpPos = url.find("://")
+      if (httpPos == -1):
+         webserver = url
+      else:
+         webserver = url[(httpPos + 3):]
+
+      # Remover caminho do servidor se existir (google.com/fotos)
+      webserverEnd = webserver.find("/")
+      if (webserverEnd == -1):
+         webserverEnd = len(webserver)
+
+      return webserver[:webserverEnd]
+
+   def getPort(self, url):
+      portBegin = url.find(":")
+
+      port = -1
+      if (portBegin == -1):
+         port = 80
+      else:
+         temp = url[portBegin + 1:]
+         port = int(temp)
       
+      return port
+
+   def getAddress(self, url):
+      webserver = self.getWebserver(url)
+      port = self.getPort(webserver)
+
+      portString = ":" + str(port)
+
+      webserver = webserver.replace(portString, "")
+
+      return (webserver, port)
 
 
       
@@ -79,11 +105,12 @@ def atribuirPorta():
    print("Nenhuma porta selecionada. Escolhendo :8080")
    return 8080
 
-
 if __name__ == "__main__":
    arq = open(sys.argv[2], 'r')
    blacklist = arq.readline()
+
    porta = atribuirPorta()
+
    proxyServer = ProxyServer(porta, blacklist)
    proxyServer.escutar()
 
