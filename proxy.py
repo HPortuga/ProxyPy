@@ -25,32 +25,43 @@ class ProxyServer():
    def executarProxy(self, clientSocket, endereco, blacklist):
 
       # Requisicao do Browser
-      request = str(clientSocket.recv(999999))
+      data = clientSocket.recv(999999)
+      request = str(data)
 
       first_line = request.split('\n')[0]
       url = first_line.split(' ')[1]
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
+      # Cria socket para comunicação com o servidor
+      webserver, port = self.getAddress(url)
+      serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      serverSock.connect((webserver, port))
+
       if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
+
          # Procurar se url esta na blacklist
          if (url in blacklist):
             print("URL na blacklist!") 
+         # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
+         # else if url in cache:
+            # TODO
+         # É necessário ir buscar no servidor
+         else:
+            serverSock.send(data)               # Envia a requisição ao servidor
 
-         print("Conectando com ",url,"\n")
+            while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
+               reply = serverSock.recv(8192)
+               if len(reply) > 0:
+                  clientSocket.send(reply)
+               else:
+                  break
 
-         webserver, port = self.getAddress(url)
-         
-      
+            serverSock.close()
+            clientSocket.close()
       else:
          print("SERVER ERROR - NOT IMPLEMENTED: ",connectionMethod,"\n")
          clientSocket.close()
          sys.exit(1)
-
-         # Se metodo = get
-            # Se esta na blacklist, retorna bloqueado
-            # senao se esta na cache, retorna da cache
-            # senao, busca no servidor e guardar na cache
-         # senao, retorna bloqueado
    
    def getWebserver(self, url):
       # Remover http:// se existir
@@ -87,10 +98,7 @@ class ProxyServer():
 
       webserver = webserver.replace(portString, "")
 
-      return (webserver, port)
-
-
-      
+      return (webserver, port)     
 
 def atribuirPorta():
    if (len(sys.argv) >= 2):
