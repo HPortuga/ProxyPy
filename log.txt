@@ -1,0 +1,5 @@
+Proxy Iniciado em: localhost - 8080
+Server Time: 2019-09-18 15:05:08.619962
+------------------------------------------------------
+
+Conexao com ('127.0.0.1', 37642) foi estabelecida!

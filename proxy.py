@@ -1,6 +1,9 @@
 import socket
 import _thread
 import sys
+import datetime
+
+LOG = "log.txt"
 
 class ProxyServer():
    def __init__ (self, porta, blacklist):
@@ -8,14 +11,31 @@ class ProxyServer():
       self.blacklist = blacklist
       self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.sock.bind(('', self.porta))
+      self.inicializarLog()
+
+   def inicializarLog(self):
+      self.log = open(LOG, "w")     # w cria ficheiro caso nao exista e sobrescreve caso exista (apaga o conteudo)
+      self.log.write("Proxy Iniciado em: localhost - %d" % self.porta)
+      self.log.write("\n")
+      self.log.write("Server Time: %s" % datetime.datetime.now())
+      self.log.write("\n")
+      self.log.write("------------------------------------------------------")
+      self.log.write("\n")
+      self.log.write("\n")
+      self.log.close()
+
+   def escreverNoLog(self, string):
+      self.log = open(LOG, "a")     # Apende texto no final do arquivo
+      self.log.write(string)
+      self.log.write("\n")
+      self.log.close()
 
    def escutar(self):
-      print("Escutando na porta ", porta ,"...")
       self.sock.listen(50)
 
       while True:
          clientSocket, endereco = self.sock.accept()
-         print("Conexao com " + str(tuple(endereco)) + " foi estabelecida!")
+         self.escreverNoLog("Conexao com %s foi estabelecida!" % str(tuple(endereco)))
 
          _thread.start_new_thread(self.executarProxy, (clientSocket, endereco, self.blacklist))
 
@@ -27,6 +47,7 @@ class ProxyServer():
       request = str(data)
 
       if (request == ""):
+         self.escreverNoLog("Requisicao Invalida! Fechando socket com cliente...")
          clientSocket.close()
          sys.exit(1)
 
@@ -35,39 +56,44 @@ class ProxyServer():
       url = first_line.split(' ')[1]
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
+      if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
+
+         # Procurar se url esta na blacklist
+         if (url in blacklist):
+            self.escreverNoLog("%s esta na blacklist!" % url)
+            clientSocket.close()
+            sys.exit(1)
+
+         else:
+            # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
+            # else if url in cache:
+               # TODO
+            # É necessário ir buscar no servidor
+            
+            _thread.start_new_thread(self.enviarResposta, (url, clientSocket6))
+
+      else:
+         self.escreverNoLog("SERVER ERROR - NOT IMPLEMENTED (502): %s" % connectionMethod)
+         clientSocket.close()
+         sys.exit(1)
+
+   def enviarResposta(self, url, clientSocket):
       # Cria socket para comunicação com o servidor
       webserver, port = self.getAddress(url)
       serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       serverSock.connect((webserver, port))
 
-      if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
+      serverSock.send(data)               # Envia a requisição ao servidor
 
-         # Procurar se url esta na blacklist
-         if (url in blacklist):
-            print("URL na blacklist!")
-            clientSocket.close()
-            sys.exit(1)
-
-         # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
-         # else if url in cache:
-            # TODO
-         # É necessário ir buscar no servidor
+      while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
+         reply = serverSock.recv(999999)
+         if len(reply) > 0:
+            clientSocket.send(reply)
          else:
-            serverSock.send(data)               # Envia a requisição ao servidor
+            break
 
-            while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
-               reply = serverSock.recv(8192)
-               if len(reply) > 0:
-                  clientSocket.send(reply)
-               else:
-                  break
-
-            serverSock.close()
-            clientSocket.close()
-      else:
-         print("SERVER ERROR - NOT IMPLEMENTED: ",connectionMethod,"\n")
-         clientSocket.close()
-         sys.exit(1)
+      serverSock.close()
+      clientSocket.close()
    
    def getWebserver(self, url):
       # Remover http:// se existir
