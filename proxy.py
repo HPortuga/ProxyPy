@@ -42,7 +42,7 @@ class ProxyServer():
       self.sock.close()
 
    def executarProxy(self, clientSocket, endereco, blacklist):
-      # Requisicao do Browser
+      # Requisicao do servidor
       data = clientSocket.recv(999999)
       request = str(data)
 
@@ -57,10 +57,11 @@ class ProxyServer():
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
 
       if (connectionMethod == "GET" or connectionMethod == "CONNECT"):
+         webserver, port = self.getAddress(url)
 
          # Procurar se url esta na blacklist
-         if (url in blacklist):
-            self.escreverNoLog("%s esta na blacklist!" % url)
+         if (webserver in blacklist):
+            self.escreverNoLog("%s esta na blacklist!" % webserver)
             clientSocket.close()
             sys.exit(1)
 
@@ -70,20 +71,40 @@ class ProxyServer():
                # TODO
             # É necessário ir buscar no servidor
             
-            _thread.start_new_thread(self.enviarResposta, (url, clientSocket6))
+            # Enviar resposta ao browser
+            serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            serverSock.connect((webserver, port))
+
+            try:
+               serverSock.send(data)               # Envia a requisição ao servidor
+            except socket.error as ex:
+               print (ex)
+
+            while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
+               reply = serverSock.recv(999999)
+               if len(reply) > 0:
+                  clientSocket.send(reply)      # Ta enviando "b''"
+               else:
+                  break
+
+            serverSock.close()
+            clientSocket.close()
 
       else:
          self.escreverNoLog("SERVER ERROR - NOT IMPLEMENTED (502): %s" % connectionMethod)
          clientSocket.close()
          sys.exit(1)
 
-   def enviarResposta(self, url, clientSocket):
+   def enviarResposta(self, url, clientSocket, data):
       # Cria socket para comunicação com o servidor
       webserver, port = self.getAddress(url)
       serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       serverSock.connect((webserver, port))
 
-      serverSock.send(data)               # Envia a requisição ao servidor
+      try:
+         serverSock.send(data)               # Envia a requisição ao servidor
+      except socket.error as ex:
+         print (ex)
 
       while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
          reply = serverSock.recv(999999)

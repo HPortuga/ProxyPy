@@ -1,5 +1,55 @@
 Proxy Iniciado em: localhost - 8080
-Server Time: 2019-09-18 15:05:08.619962
+Server Time: 2019-09-18 15:24:44.698512
 ------------------------------------------------------
 
-Conexao com ('127.0.0.1', 37642) foi estabelecida!
+Conexao com ('127.0.0.1', 38394) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38396) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38400) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38404) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38406) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38408) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38410) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38412) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38414) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38416) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38418) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38420) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38422) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38424) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38426) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38428) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38430) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38432) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38434) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38436) foi estabelecida!
+www.google.com esta na blacklist!
+Conexao com ('127.0.0.1', 38438) foi estabelecida!
+Conexao com ('127.0.0.1', 38442) foi estabelecida!
+Conexao com ('127.0.0.1', 38446) foi estabelecida!
+Conexao com ('127.0.0.1', 38450) foi estabelecida!
+Conexao com ('127.0.0.1', 38454) foi estabelecida!
+Conexao com ('127.0.0.1', 38458) foi estabelecida!
+Conexao com ('127.0.0.1', 38464) foi estabelecida!
+Conexao com ('127.0.0.1', 38468) foi estabelecida!
+Conexao com ('127.0.0.1', 38472) foi estabelecida!
+Conexao com ('127.0.0.1', 38476) foi estabelecida!
+Conexao com ('127.0.0.1', 38484) foi estabelecida!
