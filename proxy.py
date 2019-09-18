@@ -17,17 +17,20 @@ class ProxyServer():
          clientSocket, endereco = self.sock.accept()
          print("Conexao com " + str(tuple(endereco)) + " foi estabelecida!")
 
-         # Essa e a funcao que deve ser executada dentro da thrad
          _thread.start_new_thread(self.executarProxy, (clientSocket, endereco, self.blacklist))
 
       self.sock.close()
 
    def executarProxy(self, clientSocket, endereco, blacklist):
-
       # Requisicao do Browser
       data = clientSocket.recv(999999)
       request = str(data)
 
+      if (request == ""):
+         clientSocket.close()
+         sys.exit(1)
+
+      # Parse request
       first_line = request.split('\n')[0]
       url = first_line.split(' ')[1]
       connectionMethod = first_line.split(' ')[0].replace("b'", "")
@@ -41,7 +44,10 @@ class ProxyServer():
 
          # Procurar se url esta na blacklist
          if (url in blacklist):
-            print("URL na blacklist!") 
+            print("URL na blacklist!")
+            clientSocket.close()
+            sys.exit(1)
+
          # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
          # else if url in cache:
             # TODO
@@ -115,7 +121,7 @@ def atribuirPorta():
 
 if __name__ == "__main__":
    arq = open(sys.argv[2], 'r')
-   blacklist = arq.readline()
+   blacklist = arq.readlines()
 
    porta = atribuirPorta()
 
