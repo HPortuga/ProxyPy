@@ -2,16 +2,18 @@ import socket
 import _thread
 import sys
 import datetime
+from cache import Cache
 
 LOG = "log.txt"
 
 class ProxyServer():
-   def __init__ (self, porta, blacklist):
+   def __init__ (self, porta, blacklist, cache):
       self.porta = porta
       self.blacklist = blacklist
       self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.sock.bind(('', self.porta))
       self.inicializarLog()
+      self.cache = cache
 
    def inicializarLog(self):
       self.log = open(LOG, "w")     # w cria ficheiro caso nao exista e sobrescreve caso exista (apaga o conteudo)
@@ -65,7 +67,6 @@ class ProxyServer():
             clientSocket.close()
             sys.exit(1)
 
-         else:
             # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
             # else if url in cache:
                # TODO
@@ -169,10 +170,7 @@ def atribuirPorta():
 if __name__ == "__main__":
    arq = open(sys.argv[2], 'r')
    blacklist = arq.readlines()
-
    porta = atribuirPorta()
-
-   proxyServer = ProxyServer(porta, blacklist)
+   cache = Cache()
+   proxyServer = ProxyServer(porta, blacklist, cache)
    proxyServer.escutar()
-
-   

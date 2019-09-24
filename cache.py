@@ -1,29 +1,18 @@
-class bufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
-    def __init__(self, time, data):
-        self.time = time                    # Hora de entrada na cache
-        self.data  = data                   # Dados de resposta
-
-    def getHora():
-        return self.hora
-
-    def getData():
-        return self.data
-
-class cache():
+class Cache():
     def __init__ (self):
         self.buffer = {}                            # Dicionario representando a cache. Tem como chave a url e como valor uma instancia da classe bufferData
         self.size = 20000000                        # Capacidade total medida em bytes
         self.currentCapacity = 20000000             # Espaco disponivel atual
 
-    def addToCache(url, dictData):                  # dicData eh instancia de bufferData
-        if (len(data) <= currentCapacity):
+    def addToCache(self, url, dictData):                  # dicData eh instancia de bufferData
+        if (len(dictData.getData()) <= self.currentCapacity):
             self.buffer[url] = dictData
             self.currentCapacity -= len(dictData.getData())
         else:
             max = 0
             elem = ''
 
-            while (len(data) <= currentCapacity):
+            while (len(dictData.getData()) <= self.currentCapacity):
 
                 for e in self.buffer:
                     if self.buffer[e].getHora() > max:
@@ -35,7 +24,18 @@ class cache():
             self.buffer[url] = dictData
             self.currentCapacity -= len(dictData.getData())
 
-    def removeFromCache(url):
-        if url in self.cache:
-            self.currentCapacity += len(self.cache[url].getData())
-            del(self.cache[url])
+    def removeFromCache(self, url):
+        if url in self.buffer:
+            self.currentCapacity += len(self.buffer[url].getData())
+            del(self.buffer[url])
+
+class BufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
+    def __init__(self, time, data):
+        self.time = time                    # Hora de entrada na cache
+        self.data  = data                   # Dados de resposta
+
+    def getHora(self):
+        return self.time
+
+    def getData(self):
+        return self.data
