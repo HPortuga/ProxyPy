@@ -15,7 +15,7 @@ class cache():
         self.size = 20000000                        # Capacidade total medida em bytes
         self.currentCapacity = 20000000             # Espaco disponivel atual
 
-    def addToCache(url, dictData):
+    def addToCache(url, dictData):                  # dicData eh instancia de bufferData
         if (len(data) <= currentCapacity):
             self.buffer[url] = dictData
             self.currentCapacity -= len(dictData.getData())
