@@ -1,3 +1,14 @@
+class BufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
+    def __init__(self, time, data):
+        self.time = time                    # Hora de entrada na cache
+        self.data  = data                   # Dados de resposta
+
+    def getHora(self):
+        return self.time
+
+    def getData(self):
+        return self.data
+
 class Cache():
     def __init__ (self):
         self.buffer = {}                            # Dicionario representando a cache. Tem como chave a url e como valor uma instancia da classe bufferData
@@ -28,14 +39,3 @@ class Cache():
         if url in self.buffer:
             self.currentCapacity += len(self.buffer[url].getData())
             del(self.buffer[url])
-
-class BufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
-    def __init__(self, time, data):
-        self.time = time                    # Hora de entrada na cache
-        self.data  = data                   # Dados de resposta
-
-    def getHora(self):
-        return self.time
-
-    def getData(self):
-        return self.data

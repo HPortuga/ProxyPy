@@ -2,7 +2,7 @@ import socket
 import _thread
 import sys
 import datetime
-from cache import Cache
+from cache import *
 
 LOG = "log.txt"
 
@@ -67,21 +67,21 @@ class ProxyServer():
             clientSocket.close()
             sys.exit(1)
 
-            # Verificar se a requisição está na cache (usar dicionário onde url é a chave e os dados são o valor)
+            # Verificar se a requisicao esta na cache (usar dicionario onde url eh a chave e os dados sao o valor)
             # else if url in cache:
                # TODO
-            # É necessário ir buscar no servidor
+            # Eh necessario ir buscar no servidor
             
             # Enviar resposta ao browser
             serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             serverSock.connect((webserver, port))
 
             try:
-               serverSock.send(data)               # Envia a requisição ao servidor
+               serverSock.send(data)               # Envia a requisicao ao servidor
             except socket.error as ex:
                print (ex)
 
-            while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
+            while True:                         # Recebe a resposta em "pedacos" de 8192 bytes
                reply = serverSock.recv(999999)
                if len(reply) > 0:
                   clientSocket.send(reply)      # Ta enviando "b''"
@@ -97,17 +97,17 @@ class ProxyServer():
          sys.exit(1)
 
    def enviarResposta(self, url, clientSocket, data):
-      # Cria socket para comunicação com o servidor
+      # Cria socket para comunicacao com o servidor
       webserver, port = self.getAddress(url)
       serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       serverSock.connect((webserver, port))
 
       try:
-         serverSock.send(data)               # Envia a requisição ao servidor
+         serverSock.send(data)               # Envia a requisicao ao servidor
       except socket.error as ex:
          print (ex)
 
-      while True:                         # Recebe a resposta em "pedaços" de 8192 bytes
+      while True:                         # Recebe a resposta em "pedacos" de 8192 bytes
          reply = serverSock.recv(999999)
          if len(reply) > 0:
             clientSocket.send(reply)
@@ -168,9 +168,25 @@ def atribuirPorta():
    return 8080
 
 if __name__ == "__main__":
+
+
    arq = open(sys.argv[2], 'r')
+
    blacklist = arq.readlines()
+
    porta = atribuirPorta()
+
    cache = Cache()
+   data1 = BufferData(2000, 'some data')
+   data2 = BufferData(2030, 'some other data')
+   cache.addToCache('www.google.com', data1)
+   cache.addToCache('www.mydomain.com.br', data2)
+
+   print(cache.buffer)
+
+   cache.removeFromCache('www.google.com')
+   print(cache.buffer)
+
    proxyServer = ProxyServer(porta, blacklist, cache)
+
    proxyServer.escutar()
