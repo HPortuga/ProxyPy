@@ -2,8 +2,8 @@ from datetime import datetime
 
 class bufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
     def __init__(self, time, data):
-        self.time = hora
-        self.data  = data
+        self.time = time                    # Hora de entrada na cache
+        self.data  = data                   # Dados de resposta
 
     def getHora():
         return self.hora
