@@ -1,5 +1,3 @@
-from datetime import datetime
-
 class bufferData():                         # Objeto valor do dicionario. Precisamos da hora de entrada na cache    
     def __init__(self, time, data):
         self.time = time                    # Hora de entrada na cache
@@ -13,7 +11,7 @@ class bufferData():                         # Objeto valor do dicionario. Precis
 
 class cache():
     def __init__ (self):
-        self.buffer = {}                            # Dicionario representando a cache. Tem como valor uma instancia da classe bufferData
+        self.buffer = {}                            # Dicionario representando a cache. Tem como chave a url e como valor uma instancia da classe bufferData
         self.size = 20000000                        # Capacidade total medida em bytes
         self.currentCapacity = 20000000             # Espaco disponivel atual
 
