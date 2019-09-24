@@ -12,10 +12,10 @@ class bufferData():                         # Objeto valor do dicionario. Precis
         return self.data
 
 class cache():
-    def __init__ (self, size):
-        self.buffer = {}                        # Dicionario representando a cache. Tem como valor uma instancia da classe bufferData
-        self.size = size                        # Capacidade total
-        self.currentCapacity = size             # Espaco disponivel
+    def __init__ (self):
+        self.buffer = {}                            # Dicionario representando a cache. Tem como valor uma instancia da classe bufferData
+        self.size = 20000000                        # Capacidade total medida em bytes
+        self.currentCapacity = 20000000             # Espaco disponivel atual
 
     def addToCache(url, dictData):
         if (len(data) <= currentCapacity):
